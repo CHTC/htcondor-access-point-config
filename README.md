@@ -6,13 +6,23 @@ Information that needs to be submitted to CHTC
 * hostname and IP address of submit host
 * contact email for host admin
 
-install development condor rpm
+Install development condor branch
 	https://research.cs.wisc.edu/htcondor/instructions/
+
+Confirm that the following exist (the RPM should create these)
+	/etc/condor/tokens.d   (chmod 700 and owned by the user condor is running as)
+	/etc/condor/config.d
 
 Copy token from CHTC to 
 	/etc/condor/tokens.d
+	(token with chmod 700 and owned by the user condor is running as)
 
-place chtc-flock.conf in 
+Place chtc-flock.conf in 
 	/etc/condor/config.d
 
-start condor service or run condor_reconfig
+Start condor service or run condor_reconfig
+
+Check connectivity
+	condor_status -pool cm.chtc.wisc.edu
+you should see a large list of machines
+
