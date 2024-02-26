@@ -1,4 +1,4 @@
-# chtc-flocking
+# CHTC HTCondor Access Point Configuration
 
 Flocking to the CHTC condor pool requires some setup and configuration on both ends, and this document should help walk you through it.
 
