@@ -26,9 +26,8 @@ Place chtc-flock.conf in
 
 Git clone this repository into `/usr/local/etc/condor`, or some other appropriate directory other than `/etc/condor`:
 ```
-sudo mkdir -p /usr/local/etc/condor
-cd /usr/local/etc/condor
-sudo git clone git@github.com:CHTC/htcondor-access-point-config.git
+cd /usr/local/etc/
+sudo git clone git@github.com:CHTC/htcondor-access-point-config.git ./condor
 ```
 
 Create a file `/etc/condor/chtc_user_to_project_map`, which can be either empty or have entries like so:
