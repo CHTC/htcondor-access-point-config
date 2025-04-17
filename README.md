@@ -62,7 +62,7 @@ An IDTOKEN can be obtained in at least two ways, including:
 * Using the [condor_token_request](https://htcondor.readthedocs.io/en/latest/man-pages/condor_token_request.html) tool
 * Having a CHTC administrator provide one over a **secure** channel
 
-Generally the `condor_token_request` method is preferred (the tool is included in the HTCSS package [installed previously[(#install-the-htcondor-software-suite)).
+Generally the `condor_token_request` method is preferred (the tool is included in the HTCSS package [installed previously](#install-the-htcondor-software-suite)).
 
 A `condor_token_request` will timeout, so coordinate with a CHTC administrator before requesting one so that they will be ready to approve it in real time. An appropriate invocation might be:
 ```
