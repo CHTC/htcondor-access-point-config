@@ -86,3 +86,25 @@ If HTCSS services were already running you can reconfigure them with:
 sudo condor_reconfig
 ```
 (The `sudo` may not be necessary depending on your existing HTCSS configuration).
+
+To determine if the CHTC collector knows about your access point:
+```
+condor_status -pool chtc.wisc.edu -schedd
+```
+Your access point's fully qualified domain name should show up in the list.  If so, the CHTC central manager will attempt to find matches for your access point's jobs.
+
+## Firewall Configuration
+Although your access point can now communicate with CHTC resources, CHTC resources may not be able to communicate with your access point.  This will lead to failures when the CHTC execution points reach out to your access point for file transfers.  Your access point will need to allow connections for destination port TCP 9618 coming from the following (CHTC) source IP address ranges:
+* 128.104.55.0/24
+* 128.104.58.0/23
+* 128.104.100.0/22 
+* 128.105.68.0/23
+* 128.105.76.0/24
+* 128.105.82.0/24 
+* 128.105.244.0/23
+
+And, if your access point has an IPv6 address, from the following IPv6 ranges:
+* 2607:f388:107c:0501::/64 
+* 2607:f388:1086::/64
+* 2607:f388:2200:00c0::/64 
+* 2607:f388:2200:0100::/60
