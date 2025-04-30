@@ -66,7 +66,7 @@ Generally the `condor_token_request` method is preferred (the tool is included i
 
 A `condor_token_request` will timeout, so coordinate with a CHTC administrator before requesting one so that they will be ready to approve it in real time. An appropriate invocation might be:
 ```
-sudo env _CONDOR_TOOL.SEC_CLIENT_AUTHENTICATION_METHODS=SSL condor_token_request -pool cm.chtc.wisc.edu -type collector -identity SCHEDD_$(hostname -f)@cm.chtc.wisc.edu -authz ADVERTISE_MASTER -authz ADVERTISE_SCHEDD -authz NEGOTIATOR -authz DAEMON -authz READ -token SCHEDD_$(hostname -f)@cm.chtc.wisc.edu`
+sudo env _CONDOR_TOOL.SEC_CLIENT_AUTHENTICATION_METHODS=SSL condor_token_request -pool cm.chtc.wisc.edu -type collector -identity SCHEDD_$(hostname -f)@cm.chtc.wisc.edu -authz ADVERTISE_MASTER -authz ADVERTISE_SCHEDD -authz NEGOTIATOR -authz DAEMON -authz READ -token SCHEDD_$(hostname -f)@cm.chtc.wisc.edu
 ```
 
 The `condor_token_request` tool will place the IDTOKEN in the correct place with the correct ownership (`root`) and mode (`0400`).  If a CHTC administrator provided the IDTOKEN to you over a secure channel, then copy the IDTOKEN into the `/etc/condor/tokens.d` directory:
