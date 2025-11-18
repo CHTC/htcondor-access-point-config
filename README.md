@@ -89,7 +89,7 @@ sudo condor_reconfig
 
 To determine if the CHTC collector knows about your access point:
 ```
-condor_status -pool chtc.wisc.edu -schedd
+condor_status -pool cm.chtc.wisc.edu -schedd
 ```
 Your access point's fully qualified domain name should show up in the list.  If so, the CHTC central manager will attempt to find matches for your access point's jobs.
 
