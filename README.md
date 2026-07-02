@@ -49,7 +49,6 @@ cd /usr/local/etc/
 sudo git clone git@github.com:CHTC/htcondor-access-point-config.git ./condor
 ```
 
-
 ## Modify Local Configuration
 The third step is to modify your HTCondor configuration to include the configuration cloned from github in the previous step.
 
@@ -165,14 +164,14 @@ Running a CHTC access point on AWS EC2 requires additional config steps in the A
 
 ### Elastic IP
 
-By default, AWS EC2 instances get assigned a new public IP address each time they are started. This is not compatible with the CHTC pool, which requires a static IP address for each access point.  
-You will need to configure an Elastic IP for your access point.
+By default, AWS EC2 instances get assigned a new public IP address each time they are started. This is not compatible with the CHTC pool, which requires a static IP address for each Access Point.  
+You will need to configure an Elastic IP for your Access Point.
 
 1. Navigate to the EC2 console, and select "Elastic IPs" from the left-hand menu.
 
 1. Create a new Elastic IP, and associate it with your access point's EC2 instance.
 
-1. Note the provisioned Elastic IP address. You must provide it to the AP in subsequent steps.
+1. Note the provisioned Elastic IP address. You must provide it to the Access Point in subsequent steps.
    1. Where required, the Elastic IP will be noted as `<ELASTIC_IP>`
 
 ### Security Group
