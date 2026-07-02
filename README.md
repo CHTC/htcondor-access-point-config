@@ -12,38 +12,6 @@ Information that needs to be received from CHTC:
 * One or more project names [(see below)](#create-a-project-map-file)
 * An IDTOKEN credential [(see below)](#obtain-and-place-the-idtoken)
 
-## AWS Prerequisites
-
-### Elastic IP
-
-By default, AWS EC2 instances get assigned a new public IP address each time they are started. This is not compatible with the CHTC pool, which requires a static IP address for each access point.  
-You will need to configure an Elastic IP for your access point.
-
-1. Navigate to the EC2 console, and select "Elastic IPs" from the left-hand menu.
-
-1. Create a new Elastic IP, and associate it with your access point's EC2 instance.
-
-1. Note the provisioned Elastic IP address. You must provide it to the AP in subsequent steps.
-   1. Where required, the Elastic IP will be noted as `<ELASTIC_IP>`
-
-### Security Group
-
-Your access point's security group must allow incoming TCP traffic on port 9618 so that CHTC execution points can reach it (see [Firewall Configuration](#firewall-configuration) for the specific CHTC source IP ranges to allow).
-
-1. Navigate to the EC2 console, and select "Instances" from the left-hand menu.
-
-1. Select your access point's EC2 instance, then open the "Security" tab in the details pane.
-
-1. Click the security group listed under "Security groups" to open it.
-
-1. On the security group's page, select the "Inbound rules" tab, then click "Edit inbound rules".
-
-1. Click "Add rule". For "Type", select "Custom TCP". For "Port range", enter `9618`.
-
-1. For "Source", select "Custom", and enter the CHTC source IP ranges (in CIDR notation) that should be allowed to connect. Add one rule per CIDR range, clicking "Add rule" again for each additional range.
-
-1. Click "Save rules".
-
 ## Install the HTCondor Software Suite
 
 The first step is to install the HTCondor Software Suite (HTCSS). See installation instructions [here](https://htcondor.readthedocs.io/en/latest/getting-htcondor/admin-quick-start.html), if it has not already been installed. 
@@ -64,11 +32,13 @@ After installation confirm that the following directories exist (the RPM/DEB sho
 * `/etc/condor/tokens.d` (`chmod 700` and owned by the user account that condor is running as)
 * `/etc/condor/config.d`
 
+**Note:** If you are running your AP as an AWS EC2 instance, see section [AWS Prerequisites](#aws-prerequisites) before proceeding.
+
 ## Clone Configuration
 
 The second step is to clone the "HTCondor Access Point" configuration from github.  You should `git clone` this repository into `/usr/local/etc/condor`, or some other appropriate directory **other than** `/etc/condor`:
 
-Install Git:
+**Note:** EL-based users may need to install `git` first:
 ```
 sudo yum install -y git
 ```
@@ -94,8 +64,10 @@ LOCAL_CONFIG_DIR = /usr/local/etc/condor/config.d
 # mapping in /etc/condor/condor_config.local;  SURROUNDING DOUBLE
 # QUOTES ARE IMPORTANT.
 DEFAULT_PROJECT_NAME = "FooLab"
+```
 
-
+**Note:** AWS users must also set the `TCP_FORWARDING_HOST` to the Elastic IP of their access point.
+```
 # The AP must be made aware of its own Elastic IP. This IP is advertised
 to the CHTC CM and then used by EPs to advertise back to the AP.
 TCP_FORWARDING_HOST = <ELASTIC_IP>
@@ -123,7 +95,11 @@ Generally the `condor_token_request` method is preferred (the tool is included i
 
 A `condor_token_request` will timeout, so coordinate with a CHTC administrator before requesting one so that they will be ready to approve it in real time. An appropriate invocation might be:
 ```
+sudo env _CONDOR_TOOL.SEC_CLIENT_AUTHENTICATION_METHODS=SSL condor_token_request -pool cm.chtc.wisc.edu -type collector -identity SCHEDD_$(hostname -f)@cm.chtc.wisc.edu -authz ADVERTISE_MASTER -authz ADVERTISE_SCHEDD -authz NEGOTIATOR -authz DAEMON -authz READ -token SCHEDD_$(hostname -f)@cm.chtc.wisc.edu
+```
 
+**Note:** AWS users should use their Elastic IP address instead of `$(hostname -f)`:
+```
 sudo env ELASTIC_IP="<ELASTIC_IP>" _CONDOR_TOOL.SEC_CLIENT_AUTHENTICATION_METHODS=SSL condor_token_request -pool cm.chtc.wisc.edu -type collector -identity SCHEDD_$ELASTIC_IP@cm.chtc.wisc.edu -authz ADVERTISE_MASTER -authz ADVERTISE_SCHEDD -authz NEGOTIATOR -authz DAEMON -authz READ -token SCHEDD_$ELASTIC_IP@cm.chtc.wisc.edu
 ```
 
@@ -182,3 +158,37 @@ HTCondor CLI tools can be configured to use IDToken auth as follows (note that `
 ```
 sudo env _CONDOR_TOOL.SEC_CLIENT_AUTHENTICATION=REQUIRED condor_status
 ```
+
+## AWS Prerequisites
+
+Running a CHTC access point on AWS EC2 requires additional config steps in the AWS console to ensure that the AP can be reached reliably by CHTC execution points.
+
+### Elastic IP
+
+By default, AWS EC2 instances get assigned a new public IP address each time they are started. This is not compatible with the CHTC pool, which requires a static IP address for each access point.  
+You will need to configure an Elastic IP for your access point.
+
+1. Navigate to the EC2 console, and select "Elastic IPs" from the left-hand menu.
+
+1. Create a new Elastic IP, and associate it with your access point's EC2 instance.
+
+1. Note the provisioned Elastic IP address. You must provide it to the AP in subsequent steps.
+   1. Where required, the Elastic IP will be noted as `<ELASTIC_IP>`
+
+### Security Group
+
+Your access point's security group must allow incoming TCP traffic on port 9618 so that CHTC execution points can reach it (see [Firewall Configuration](#firewall-configuration) for the specific CHTC source IP ranges to allow).
+
+1. Navigate to the EC2 console, and select "Instances" from the left-hand menu.
+
+1. Select your access point's EC2 instance, then open the "Security" tab in the details pane.
+
+1. Click the security group listed under "Security groups" to open it.
+
+1. On the security group's page, select the "Inbound rules" tab, then click "Edit inbound rules".
+
+1. Click "Add rule". For "Type", select "Custom TCP". For "Port range", enter `9618`.
+
+1. For "Source", select "Custom", and enter the CHTC source IP ranges (in CIDR notation) that should be allowed to connect. Add one rule per CIDR range, clicking "Add rule" again for each additional range.
+
+1. Click "Save rules".
