@@ -97,9 +97,9 @@ A `condor_token_request` will timeout, so coordinate with a CHTC administrator b
 sudo env _CONDOR_TOOL.SEC_CLIENT_AUTHENTICATION_METHODS=SSL condor_token_request -pool cm.chtc.wisc.edu -type collector -identity SCHEDD_$(hostname -f)@cm.chtc.wisc.edu -authz ADVERTISE_MASTER -authz ADVERTISE_SCHEDD -authz NEGOTIATOR -authz DAEMON -authz READ -token SCHEDD_$(hostname -f)@cm.chtc.wisc.edu
 ```
 
-**Note:** AWS users should use their Elastic IP address instead of `$(hostname -f)`:
+**Note:** for AWS users, `$(hostname -f)` will resolve to a non-human-readable IP address. Use a sensible alias, such as your AWS account name, instead:
 ```
-sudo env ELASTIC_IP="<ELASTIC_IP>" _CONDOR_TOOL.SEC_CLIENT_AUTHENTICATION_METHODS=SSL condor_token_request -pool cm.chtc.wisc.edu -type collector -identity SCHEDD_$ELASTIC_IP@cm.chtc.wisc.edu -authz ADVERTISE_MASTER -authz ADVERTISE_SCHEDD -authz NEGOTIATOR -authz DAEMON -authz READ -token SCHEDD_$ELASTIC_IP@cm.chtc.wisc.edu
+sudo env AWS_ALIAS="<aws alias>" _CONDOR_TOOL.SEC_CLIENT_AUTHENTICATION_METHODS=SSL condor_token_request -pool cm.chtc.wisc.edu -type collector -identity SCHEDD_$AWS_ALIAS@cm.chtc.wisc.edu -authz ADVERTISE_MASTER -authz ADVERTISE_SCHEDD -authz NEGOTIATOR -authz DAEMON -authz READ -token SCHEDD_$AWS_ALIAS@cm.chtc.wisc.edu
 ```
 
 The `condor_token_request` tool will place the IDTOKEN in the correct place with the correct ownership (`root`) and mode (`0400`).  If a CHTC administrator provided the IDTOKEN to you over a secure channel, then copy the IDTOKEN into the `/etc/condor/tokens.d` directory:
@@ -141,22 +141,6 @@ And, if your access point has an IPv6 address, from the following IPv6 ranges:
 * 2607:f388:1086::/64
 * 2607:f388:2200:00c0::/64 
 * 2607:f388:2200:0100::/60
-
-## Troubleshooting
-
-### condor_status permissions issues
-
-The CHTC CM is configured to require IDTOKEN authentication for all incoming commands outside of CHTC's internal network.  If you see errors like the following when running `condor_status` against the CHTC CM, then your IDTOKEN is not being used correctly:
-```
-Error: communication error
-SECMAN:2010:Received "DENIED" from server for user unauthenticated@unmapped using no authentication method, which may imply host-based security.  
-Our address was '127.0.0.1', and server's address was '192.168.0.1'.  Check your ALLOW settings and IP protocols.
-```
-
-HTCondor CLI tools can be configured to use IDToken auth as follows (note that `sudo` is required to read the IDTOKEN from `/etc/condor/tokens.d`):
-```
-sudo env _CONDOR_TOOL.SEC_CLIENT_AUTHENTICATION=REQUIRED condor_status
-```
 
 ## AWS Prerequisites
 
