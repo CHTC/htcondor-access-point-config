@@ -25,7 +25,7 @@ curl -fsSL https://get.htcondor.org | sudo GET_HTCONDOR_PASSWORD="dummy-password
 Remove the created password after install:
 
 ```
-sudo sh -c 'rm /etc/condor/passwords.d/*'
+sudo rm /etc/condor/passwords.d/POOL
 ```
 
 After installation confirm that the following directories exist (the RPM/DEB should create these):
